@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./CBSEWebPortal
+      dockerfile: Dockerfile
+    ports:
+      - "5000:8080" 
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=sqlserver;Database=CBSEWebPortal;User Id=sa;Password=Password123!;TrustServerCertificate=True;MultipleActiveResultSets=true
+    depends_on:
+      - sqlserver
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./cbse-portal-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:8080" 
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: sqlserver
+    ports:
+      - "1433:1433" 
+    environment:
+      SA_PASSWORD: "Password123!" 
+      ACCEPT_EULA: "Y" 
+    volumes:
+      - sql_data:/var/opt/mssql
+      - ./setup.sql:/docker-entrypoint-initdb.d/setup.sql 
+    networks:
+      - app-network
+
+volumes:
+  sql_data:
+
+networks:
+  app-network: 
