@@ -57,7 +57,7 @@ const AdminDashboard = () => {
   const handleAddStudent = async (requestId, studentName, principalId) => {
     try {
       const addStudentResponse = await axios.post(
-        `${API_URL}/api/CBSEAdmin/enroll-student`,
+        `${API_URL}/CBSEAdmin/enroll-student`,
         {
           id: requestId,
           studentName,
